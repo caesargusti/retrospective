@@ -10,7 +10,8 @@ import (
 type database struct{}
 
 func connection() *sql.DB{
-	db, err := sql.Open("postgres", "host=127.0.0.1 port=5432 user=postgres password=password dbname=db sslmode=disable")
+	db, err := sql.Open("postgres", "host=postgres port=5432 user=postgres password=password dbname=db sslmode=disable")
+	// db, err := sql.Open("postgres", "host=127.0.0.1 port=5432 user=postgres password=password dbname=db sslmode=disable")
 	
 	if err != nil {
 		log.Fatal(err)
@@ -21,8 +22,10 @@ func connection() *sql.DB{
 	}
 	return db
 }
+
 func (o database) Create(obj model.Customers) error{
 	db := connection()
+	// _, err := db.Exec("CREATE TABLE customers (id int, name varchar(20), address varchar(100), phone varchar(20))")
 	_, err := db.Exec("INSERT into customers(id,name,address,phone) values ($1, $2, $3, $4);", 
 		obj.ID,
 		obj.Name,
@@ -74,7 +77,6 @@ func (o database) Detail(id int) (model.Customers, error){
 		return cus, nil
 	}
 	return model.Customers{}, errors.New("Customers tidak ditemukan")
-	panic("aw")
 }
 
 func (o database) Update(obj model.Customers) error {

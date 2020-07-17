@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+   postgres:
+        image: postgres:12.3-alpine
+        volumes:
+            - db_data:/var/lib/postgresql/data
+        ports:
+            - 5433:5432
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: db
+
+   app:
+        image: "caesargusti/golang:v1.0.0"
+        volumes:
+            - main_data:/usr/src/app
+        build: .
+        depends_on:
+            - postgres
+        command: ["go", "run", "main.go"]
+        links:
+            - postgres
+       
+volumes:
+    db_data: {}
+    main_data: {}
